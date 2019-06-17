@@ -231,9 +231,21 @@ public class Interviews<E> {
 		return -1;
 	}
 
+	    public static int firstUniqChar(String s) {
+	        // iterate through string, check if substring from i + 1 to end of string contains another char as the char at i
+	        for (int i = 0; i < s.length(); i++) {
+	            char curr = s.charAt(i);
+	            if (s.lastIndexOf(curr) == i) {
+	                return i;
+	            }
+	        }
+	        return -1;
+	    }
 	
 	public static void main(String[] args) {
 	}
+	
+	
 
 
 

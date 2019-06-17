@@ -283,6 +283,7 @@ public final class PriorityQueue<E> {
 //		return priorityHeap.getValue(index);
 //	}
 
+	// 1 biggest priority
 	private class ComparatorNode<T> implements Comparable<ComparatorNode<T>> {
 		T value;
 		int priority;

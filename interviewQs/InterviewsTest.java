@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 class InterviewsTest {
 
-	@Test
+//	@Test
 	void closedBrackets() {
 		assertEquals(false, Interviews.closedBrackets(""));
 		assertEquals(true, Interviews.closedBrackets("abcdef"));
@@ -19,6 +19,11 @@ class InterviewsTest {
 		assertEquals(true, Interviews.closedBrackets("[ads{d(f)jfd}a]"));
 		assertEquals(true, Interviews.closedBrackets("[]()"));
 		
+	}
+	
+	@Test
+	void firstUniqChar() {
+		assertEquals(-1, Interviews.firstUniqChar("cc"));
 	}
 	
 //	@Test

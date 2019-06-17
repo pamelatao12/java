@@ -69,7 +69,7 @@ public final class ArrayList<E> {
 	public void remove(E e) {
 		int index = indexOf(e);
 		if (index == -1) {
-			return;
+			return; 
 		}
 
 		for (int j = index; j < size - 1; j++) {
