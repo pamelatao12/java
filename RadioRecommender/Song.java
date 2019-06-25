@@ -1,14 +1,20 @@
 package RadioRecommender;
 
+import java.io.FileNotFoundException;
+import java.util.Arrays;
+
 public class Song {
 	private String name;
 	private String artist;
 	private int id; // length of playlist on this station
+	private int[][] playlog;
+	private int songIndex;
 	
-	public Song(String name, String artist, int id) {
+	public Song(String name, String artist, int id) throws FileNotFoundException {
 		this.name = name;
 		this.artist = artist;
 		this.id = id;
+//		this.playlog = p.processSongLog();
 	}
 	
 	public String getName() {
@@ -28,8 +34,21 @@ public class Song {
 	 * @return array of number of times this song is played on each station's playlist
 	 */
 	public int[] stationPlays() {
-		//TODO
-		return new int[0];
+		int[] numPlays = new int[playlog.length / 4];
+		int songIndex = 0;
+		while (playlog[1][songIndex] != id) {
+			songIndex++;
+		}
+		
+		// record playlog[2][songIndex] for each station
+		int stationIndex = 2;
+		int numIndex = 0;
+		while (stationIndex < playlog.length) {
+			numPlays[numIndex] = playlog[stationIndex][songIndex];
+			numIndex++;
+			stationIndex += 4;
+		}
+		return numPlays;
 	}
 	
 	/**
@@ -46,8 +65,21 @@ public class Song {
 	 * @return last time song was played on given station, or 0 if never
 	 */
 	public int getLastPlayed(int stationId) {
-		//TODO
-		return 0;
+		// NEEDS TEST
+		
+		int stationIndex = 0;
+		while (playlog[stationIndex][0] != stationId) {
+			stationIndex += 4;
+		}
+		setSongIndex();
+		return playlog[stationIndex + 3][songIndex];
+	}
+	
+	private void setSongIndex() {
+		songIndex = 0;
+		while (playlog[1][songIndex] != this.id) {
+			songIndex++;
+		}
 	}
 	
 	/**
@@ -55,7 +87,16 @@ public class Song {
 	 * @return average number of plays of this song on stations that carry it
 	 */
 	private int averagePlays() {
-		
+		int[] numPlays = this.stationPlays();
+		int avg = 0;
+		int numStations = 0;
+		for (int i : numPlays) {
+			if (i != 0) {
+				numStations++;
+				avg = (avg + i) / numStations;
+			}
+		}
+		return avg;
 	}
 	
 	/**
@@ -63,7 +104,12 @@ public class Song {
 	 * @return
 	 */
 	private int totalPlays() {
-		
+		int[] numPlays = this.stationPlays();
+		int sum = 0;
+		for (int i : numPlays) {
+			sum += i;
+		}
+		return sum;
 	}
 	
 	/**
@@ -71,7 +117,15 @@ public class Song {
 	 * @return
 	 */
 	private int mostPlaysStation() {
-		
+		int max = this.maxPlays();
+		int id = 0;
+		setSongIndex();
+		for (int i = 2; i < playlog.length; i += 4) {
+			if (playlog[i][songIndex] == max) {
+				id = Integer.max(id, playlog[i - 2][0]);
+			}
+		}
+		return id;
 	}
 	
 	/**
@@ -79,7 +133,9 @@ public class Song {
 	 * @return
 	 */
 	private int maxPlays() {
-		
+		int[] numPlays = this.stationPlays();
+		Arrays.sort(numPlays);
+		return numPlays[numPlays.length - 1];
 	}
 	
 	/**
@@ -87,7 +143,15 @@ public class Song {
 	 * @return
 	 */
 	private int leastPlaysStation() {
-		
+		int min = this.minPlays();
+		int id = 0;
+		setSongIndex();
+		for (int i = 2; i < playlog.length; i += 4) {
+			if (playlog[i][songIndex] == min) {
+				id = Integer.max(id, playlog[i - 2][0]);
+			}
+		}
+		return id;
 	}
 	
 	/**
@@ -95,7 +159,9 @@ public class Song {
 	 * @return
 	 */
 	private int minPlays() {
-		
+		int[] numPlays = this.stationPlays();
+		Arrays.sort(numPlays);
+		return numPlays[0];
 	}
 	
 	public String toString() {
