@@ -10,6 +10,7 @@ public class Parser {
 	private File songLog;
 	private int numStations;
 	private int numSongs;
+	private int line; // length of file + 1
 	
 	public Parser(File songFile, File stationFile) throws FileNotFoundException {
 		
@@ -85,7 +86,7 @@ public class Parser {
 		read.useDelimiter(";");
 		int stationId = 0;
 		int songId = 0;
-		int line = 1;
+		line = 1;
 		// # times each song played on station
 		// time step song was last played on this station (null if none)
 		while (read.hasNext()) {
@@ -109,7 +110,30 @@ public class Parser {
 			line++;
 		}
 		read.close();
+		this.updateSongs();
+		this.updateStations();
 		return log;
+	}
+	
+	public void updateSongs() {
+		for (Song s : songs) {
+			s.setStationPlays(log);
+			s.setPlaylog(log);
+			s.setStatistics(log);
+		}
+	}
+	
+	public void updateStations() {
+		for (Station s : stations) {
+			s.setPlaylog(log);
+			s.setLength();
+			s.setPlaylist();
+		}
+		
+	}
+	
+	public int getLogLength() {
+		return line - 1;
 	}
 	
 	public Song[] getSongs() {

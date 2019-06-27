@@ -15,9 +15,7 @@ class ParserTest {
 		File songs = new File("/Users/pamelatao/Desktop/songsTest.txt");
 		File stations = new File("/Users/pamelatao/Desktop/stationsTest.txt");
 		File playlog = new File("/Users/pamelatao/Desktop/playlogTest.txt");
-		Parser p = new Parser(songs, stations, playlog);
-		p.processSongLog();
-		System.out.println(Arrays.toString(p.getLog()));
+		Parser p = new Parser(songs, stations);
 	}
 
 }

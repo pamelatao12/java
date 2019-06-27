@@ -7,8 +7,11 @@ public class Song {
 	private String name;
 	private String artist;
 	private int id; // length of playlist on this station
-	private int[][] playlog;
+	private int[] stationPlays;
 	private int songIndex;
+	private int mostPlays;
+	private int leastPlays;
+	private int[][] playlog;
 	
 	public Song(String name, String artist, int id) throws FileNotFoundException {
 		this.name = name;
@@ -34,6 +37,10 @@ public class Song {
 	 * @return array of number of times this song is played on each station's playlist
 	 */
 	public int[] stationPlays() {
+		return stationPlays;
+	}
+	
+	public void setStationPlays(int[][] playlog) {
 		int[] numPlays = new int[playlog.length / 4];
 		int songIndex = 0;
 		while (playlog[1][songIndex] != id) {
@@ -48,7 +55,7 @@ public class Song {
 			numIndex++;
 			stationIndex += 4;
 		}
-		return numPlays;
+		stationPlays = numPlays;
 	}
 	
 	/**
@@ -56,7 +63,7 @@ public class Song {
 	 * @return array containing statistics about the song
 	 */
 	public int[] getStatistics() {
-		return new int[] {averagePlays(), totalPlays(), mostPlaysStation(), maxPlays(), leastPlaysStation(), minPlays()};
+		return new int[] {averagePlays(), totalPlays(), mostPlays, maxPlays(), leastPlays, minPlays()};
 	}
 	
 	/**
@@ -75,11 +82,20 @@ public class Song {
 		return playlog[stationIndex + 3][songIndex];
 	}
 	
+	public void setPlaylog(int[][] playlog) {
+		this.playlog = playlog;
+	}
+	
 	private void setSongIndex() {
 		songIndex = 0;
 		while (playlog[1][songIndex] != this.id) {
 			songIndex++;
 		}
+	}
+	
+	public void setStatistics(int[][] playlog) {
+		mostPlays = mostPlaysStation(playlog);
+		leastPlays = leastPlaysStation(playlog);
 	}
 	
 	/**
@@ -116,7 +132,7 @@ public class Song {
 	 * Returns ID of station that plays this song the most
 	 * @return
 	 */
-	private int mostPlaysStation() {
+	private int mostPlaysStation(int[][] playlog) {
 		int max = this.maxPlays();
 		int id = 0;
 		setSongIndex();
@@ -142,7 +158,7 @@ public class Song {
 	 * Returns ID of station that plays this song the least
 	 * @return
 	 */
-	private int leastPlaysStation() {
+	private int leastPlaysStation(int[][] playlog) {
 		int min = this.minPlays();
 		int id = 0;
 		setSongIndex();
