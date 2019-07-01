@@ -86,7 +86,7 @@ public class Song {
 		this.playlog = playlog;
 	}
 	
-	private void setSongIndex() {
+	public void setSongIndex() {
 		songIndex = 0;
 		while (playlog[1][songIndex] != this.id) {
 			songIndex++;
@@ -135,7 +135,6 @@ public class Song {
 	private int mostPlaysStation(int[][] playlog) {
 		int max = this.maxPlays();
 		int id = 0;
-		setSongIndex();
 		for (int i = 2; i < playlog.length; i += 4) {
 			if (playlog[i][songIndex] == max) {
 				id = Integer.max(id, playlog[i - 2][0]);
@@ -178,6 +177,18 @@ public class Song {
 		int[] numPlays = this.stationPlays();
 		Arrays.sort(numPlays);
 		return numPlays[0];
+	}
+	
+	/**
+	 * Returns number of times this song was played on the specified station
+	 * @param station
+	 */
+	public int numPlaysOnStation(Station station) {
+		int stationIndex = 0;
+		while (this.playlog[stationIndex][0] != station.getId()) {
+			stationIndex += 4;
+		}
+		return this.playlog[stationIndex + 2][this.songIndex];
 	}
 	
 	public String toString() {

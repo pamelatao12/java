@@ -86,10 +86,11 @@ public class Parser {
 		read.useDelimiter(";");
 		int stationId = 0;
 		int songId = 0;
-		line = 1;
+		line = 0;
 		// # times each song played on station
 		// time step song was last played on this station (null if none)
 		while (read.hasNext()) {
+			line++;
 			stationId = Integer.parseInt(read.next());
 			songId = Integer.parseInt(read.nextLine().substring(1));
 			
@@ -107,7 +108,6 @@ public class Parser {
 				break; // if station found, then break;
 				}
 			}
-			line++;
 		}
 		read.close();
 		this.updateSongs();
@@ -120,6 +120,7 @@ public class Parser {
 			s.setStationPlays(log);
 			s.setPlaylog(log);
 			s.setStatistics(log);
+			s.setSongIndex();
 		}
 	}
 	
@@ -133,7 +134,7 @@ public class Parser {
 	}
 	
 	public int getLogLength() {
-		return line - 1;
+		return line;
 	}
 	
 	public Song[] getSongs() {

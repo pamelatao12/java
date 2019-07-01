@@ -10,6 +10,7 @@ public class Station {
 	private int[] playlist; // playlist of station
 	private int[][] playlog;
 	private int totalPlays;
+	private int[] numPlays; // number of times each song played on this station
 	
 	public Station(String name, int id) throws FileNotFoundException {
 		this.name = name;
@@ -56,7 +57,24 @@ public class Station {
 	}
 	
 	/**
-	 * int of each song ID in playlist
+	 * int array of number of times each song played on station
+	 */
+	public void setnumPlays() {
+		numPlays = new int[playlog[stationIndex + 2].length];
+		int index = 0;
+		for (int i = 0; i < playlog[stationIndex + 2].length; i++) {
+			// set totalPlays in the meantime
+			numPlays[index] = playlog[stationIndex + 2][i];
+			index++;
+		}
+	}
+	
+	public int[] getNumPlays() {
+		return numPlays;
+	}
+	
+	/**
+	 * int[] of each song ID in playlist
 	 */
 	public void setPlaylist() {
 		this.getLength();
@@ -65,7 +83,7 @@ public class Station {
 			// set totalPlays in the meantime
 			totalPlays += playlog[stationIndex + 2][i];
 			if (playlog[stationIndex + 2][i] != 0) {
-				playlist[index] = playlog[stationIndex + 2][i];
+				playlist[index] = playlog[stationIndex + 1][i];
 				index++;
 			}
 		}
