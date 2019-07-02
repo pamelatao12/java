@@ -4,6 +4,8 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class RadioRecommenderSystem {
@@ -188,7 +190,9 @@ public class RadioRecommenderSystem {
 		return rec;
 	}
 	
-	public static void main(String args[]) throws FileNotFoundException {
+	public static void main(String args[]) throws IOException {
+		// test
+		
 		Scanner songFilename = new Scanner(System.in);  // Create a Scanner object
 	    System.out.println("Enter name of song file: ");
 	    String songFile = songFilename.nextLine();  // Read user input
@@ -219,20 +223,88 @@ public class RadioRecommenderSystem {
 					File newLog = new File(args[0] + words[1]);
 					Scanner readLog = new Scanner(newLog);
 					BufferedWriter existingLog = new BufferedWriter(new FileWriter(songLog));
-					existingLog.write(readLog.nextLine());
+					while (readLog.hasNext()) {
+						existingLog.write(readLog.nextLine());
+					}
+					readLog.close();
+					existingLog.close();
 				}
+				parser.processSongLog(songLog);
 			} else if (words[0] == "similarsong") {
 				// find and print most similar song to chosen song
+				int closestSong = -1;
+				for (Song s : parser.getSongs()) {
+					if (s.getId() == Integer.parseInt(words[1])) {
+						closestSong = recommender.closestSong(s);
+					}
+				}
+				if (closestSong != -1) {
+					for (Song s : parser.getSongs()) {
+						if (s.getId() == closestSong) {
+							System.out.println(s.getName());
+						}
+					}
+				} else {
+					System.out.println("Song does not exist");
+				}
 			} else if (words[0] == "similarradio") {
 				// find and print most similar station to chosen station
+				int closestStation = -1;
+				for (Station s : parser.getStations()) {
+					if (s.getId() == Integer.parseInt(words[1])) {
+						closestStation = recommender.closestStation(s);
+					}
+				}
+				if (closestStation != -1) {
+					for (Station s : parser.getStations()) {
+						if (s.getId() == closestStation) {
+							System.out.println(s.getName());
+						}
+					}
+				} else {
+					System.out.println("Station does not exist");
+				}
 			} else if (words[0] == "stats") {
 				// prints statistics of chosen song
+				Song song = null;
+				for (Song s : parser.getSongs()) {
+					if (s.getId() == Integer.parseInt(words[1])) {
+						song = s;
+					}
+				}
+				System.out.println(Arrays.toString(song.getStatistics()));
 			} else if (words[0] == "lastheardon") {
 				// find and print most recent time given song is played on given station
+				Song song = null;
+				for (Song s : parser.getSongs()) {
+					if (s.getId() == Integer.parseInt(words[1])) {
+						song = s;
+					}
+				}
+				System.out.println(song.getLastPlayed(Integer.parseInt(words[1])));
 			} else if (words[0] == "lastplayed") {
 				// find and print most recent time given song is played on any station
+				Song song = null;
+				for (Song s : parser.getSongs()) {
+					if (s.getId() == Integer.parseInt(words[1])) {
+						song = s;
+					}
+				}
+				int timePlayed = 0;
+				for (Station station : parser.getStations()) {
+					timePlayed = Math.max(timePlayed, song.getLastPlayed(station.getId()));
+				}
+				System.out.println(timePlayed);
 			} else if (words[0] == "recommend") {
 				// recommends a song to the chosen station
+				recommender.bestRecommendation(Integer.parseInt(words[1]));
+				Song song = null;
+				for (Song s : parser.getSongs()) {
+					if (s.getId() == Integer.parseInt(words[1])) {
+						song = s;
+					}
+				}
+				System.out.println(song.getName());
 			} else {
 				System.out.println("Please enter a valid command");
 			}
